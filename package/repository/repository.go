@@ -1,8 +1,13 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	todo "firstRESTApi/package"
 
-type Autorisation interface {
+	"github.com/jmoiron/sqlx"
+)
+
+type Autorization interface {
+	CreateUser(user todo.User) (int, error)
 }
 
 type ToDoList interface {
@@ -12,11 +17,13 @@ type ToDoItems interface {
 }
 
 type Repository struct {
-	Autorisation
+	Autorization
 	ToDoList
 	ToDoItems
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
-	return &Repository{}
+	return &Repository{
+		Autorization: NewAuthService(db),
+	}
 }

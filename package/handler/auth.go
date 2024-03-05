@@ -1,8 +1,29 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	todo "firstRESTApi/package"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func (h *Handler) singUp(c *gin.Context) {
+	var input todo.User
+
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	id, err := h.services.Autorization.CreateUser(input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
 
 }
 

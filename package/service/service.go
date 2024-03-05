@@ -1,8 +1,12 @@
 package service
 
-import "firstRESTApi/package/repository"
+import (
+	todo "firstRESTApi/package"
+	"firstRESTApi/package/repository"
+)
 
-type Autorisation interface {
+type Autorization interface {
+	CreateUser(user todo.User) (int, error)
 }
 
 type ToDoList interface {
@@ -12,11 +16,13 @@ type ToDoItems interface {
 }
 
 type Service struct {
-	Autorisation
+	Autorization
 	ToDoList
 	ToDoItems
 }
 
 func NewService(repos *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		Autorization: NewAuthService(repos.Autorization),
+	}
 }

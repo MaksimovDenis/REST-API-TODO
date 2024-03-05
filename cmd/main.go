@@ -5,11 +5,11 @@ import (
 	"firstRESTApi/package/handler"
 	"firstRESTApi/package/repository"
 	"firstRESTApi/package/service"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/github"
@@ -17,24 +17,26 @@ import (
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	if err := initConfig(); err != nil {
-		log.Fatal("error initializing configs: %s", err.Error())
+		logrus.Fatal("error initializing configs: %s", err.Error())
 	}
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("error loading env variables: %s", err.Error())
+		logrus.Fatal("error loading env variables: %s", err.Error())
 	}
 
-	db, err := repository.NewPosgresDB(repository.Config{
+	db, err := repository.NewPostgresDB(repository.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
-		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
+		Password: os.Getenv("DB_PASSWORD"),
 	})
 	if err != nil {
-		log.Fatal("failed to initialize db: %s", err.Error())
+		logrus.Fatal("failed to initialize db: %s", err.Error())
 	}
 
 	repos := repository.NewRepository(db)
@@ -43,7 +45,7 @@ func main() {
 
 	srv := new(todo.Server)
 	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		log.Fatal("error ccured white running http server: %s", err.Error())
+		logrus.Fatal("error ccured white running http server: %s", err.Error())
 	}
 }
 
