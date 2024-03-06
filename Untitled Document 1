@@ -1,0 +1,8 @@
+go clean -modcache
+go get -u github.com/golang-migrate/migrate/v4/cmd/migrate
+
+в main.go
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/github"
+
+go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
