@@ -6,3 +6,5 @@ go get -u github.com/golang-migrate/migrate/v4/cmd/migrate
 	_ "github.com/golang-migrate/migrate/v4/source/github"
 
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+export PATH=$PATH:/home/denis/go/bin
